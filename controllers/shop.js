@@ -10,8 +10,14 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-  console.log(await Product.findById(prodId));
-  res.redirect("/")
+  const product = await Product.findById(prodId)
+  res.render('shop/product-detail',
+    {
+      product,
+      pageTitle: product.title,
+      path: '/products'
+    })
+  // res.redirect("/")
 };
 
 exports.getIndex = async (req, res, next) => {
