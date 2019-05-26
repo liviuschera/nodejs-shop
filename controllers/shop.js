@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getProducts = async (req, res, next) => {
   res.render('shop/product-list', {
@@ -33,6 +34,13 @@ exports.getCart = (req, res, next) => {
     path: '/cart',
     pageTitle: 'Your Cart'
   });
+};
+
+exports.postCart = async (req, res, next) => {
+  const prodId = req.body.productId;
+  const prodPrice = req.body.productPrice;
+  await Cart.addProduct(prodId, prodPrice);
+  res.redirect('/cart');
 };
 
 exports.getOrders = (req, res, next) => {
