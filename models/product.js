@@ -19,25 +19,12 @@ async function getProductsFromFile(id = null) {
 }
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-  }
-
-
-  async save() {
-    try {
-      this.id = Math.random().toString();
-      const products = await getProductsFromFile();
-      products.push(this);
-
-      writeFileAsync(p, JSON.stringify(products))
-    } catch (err) {
-      console.error("Save file error: ", err);
-
-    }
   }
 
   static async fetchAll() {
@@ -47,4 +34,30 @@ module.exports = class Product {
   static async findById(id) {
     return getProductsFromFile(id);
   }
+
+  async save() {
+    try {
+      let products;
+      if (this.id) {
+        const prods = await Product.fetchAll();
+        const productIndex = prods.findIndex(prod => prod.id === this.id);
+
+        products = [...prods];
+        products[productIndex] = this;
+
+      } else {
+
+        this.id = Math.random().toString();
+        products = await getProductsFromFile();
+        products.push(this);
+      }
+
+      writeFileAsync(p, JSON.stringify(products))
+    } catch (err) {
+      console.error("Save file error: ", err);
+
+    }
+  }
+
+
 };
