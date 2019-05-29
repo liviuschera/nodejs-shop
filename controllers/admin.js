@@ -57,5 +57,10 @@ exports.getProducts = async (req, res, next) => {
     pageTitle: 'Admin Products',
     path: '/admin/products'
   });
+};
 
+exports.postDeleteProduct = async (req, res, next) => {
+  const prodId = req.body.productId;
+  await Product.deleteById(prodId);
+  res.redirect('/admin/products');
 };
