@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
+const Cart = require('./cart');
 const readFileAsync = promisify(fs.readFile);
 const writeFileAsync = promisify(fs.writeFile);
-const Cart = require('./cart');
 
 const p = path.resolve('data/products.json');
 
