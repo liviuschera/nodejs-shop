@@ -34,7 +34,7 @@ module.exports = class Product {
   }
 
   static async findById(id) {
-    return getProductsFromFile(id);
+    return db.execute('SELECT * FROM products WHERE id = ?', [id])
   }
 
   static async deleteById(id) {
@@ -53,27 +53,7 @@ module.exports = class Product {
   }
 
   async save() {
-    try {
-      let products;
-      if (this.id) {
-        const prods = await Product.fetchAll();
-        const productIndex = prods.findIndex(prod => prod.id === this.id);
-
-        products = [...prods];
-        products[productIndex] = this;
-
-      } else {
-
-        this.id = Math.random().toString();
-        products = await getProductsFromFile();
-        products.push(this);
-      }
-
-      writeFileAsync(p, JSON.stringify(products));
-    } catch (err) {
-      console.error("Save file error: ", err);
-
-    }
+    db.execute('INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?);', [this.title, this.price, this.description, this.imageUrl]);
   }
 
 

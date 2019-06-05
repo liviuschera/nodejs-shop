@@ -12,12 +12,12 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-  const product = await Product.findById(prodId)
+  const [product] = await Product.findById(prodId)
 
   res.render('shop/product-detail',
     {
-      product,
-      pageTitle: product.title,
+      product: product[0],
+      pageTitle: product[0].title,
       path: '/products'
     })
   // res.redirect("/")
