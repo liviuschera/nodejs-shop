@@ -1,23 +1,24 @@
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
+const db = require('../util/database');
+// const fs = require('fs');
+// const path = require('path');
+// const { promisify } = require('util');
 const Cart = require('./cart');
-const readFileAsync = promisify(fs.readFile);
-const writeFileAsync = promisify(fs.writeFile);
+// const readFileAsync = promisify(fs.readFile);
+// const writeFileAsync = promisify(fs.writeFile);
 
-const p = path.resolve('data/products.json');
+// const p = path.resolve('data/products.json');
 
-async function getProductsFromFile(id = null) {
-  try {
-    const products = JSON.parse(await readFileAsync(p));
-    if (id) {
-      return products.find(product => product.id === id);
-    }
-    return products;
-  } catch (err) {
-    return [];
-  }
-}
+// async function getProductsFromFile(id = null) {
+//   try {
+//     const products = JSON.parse(await readFileAsync(p));
+//     if (id) {
+//       return products.find(product => product.id === id);
+//     }
+//     return products;
+//   } catch (err) {
+//     return [];
+//   }
+// }
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -29,7 +30,7 @@ module.exports = class Product {
   }
 
   static async fetchAll() {
-    return getProductsFromFile();
+    return db.execute('SELECT * FROM products');
   }
 
   static async findById(id) {

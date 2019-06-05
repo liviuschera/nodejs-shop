@@ -58,7 +58,7 @@ module.exports = class Cart {
          // The product Id was found in 'products' -> increase 'qty'
          cart.products[FIND_PRODUCT_INDEX].qty++;
          // And add the price to cart's total
-         cart.totalPrice = cart.totalPrice + +productPrice
+         cart.totalPrice = parseFloat(cart.totalPrice) + parseFloat(productPrice)
       }
 
       writeCartToFile(cart);
@@ -73,7 +73,7 @@ module.exports = class Cart {
          const productToDelete = clonedCart.products.find(prod => prod.id === id);
          if (!productToDelete) return;
          const productQty = productToDelete.qty;
-         const totalPrice = clonedCart.totalPrice = clonedCart.totalPrice - +(productPrice * productQty);
+         const totalPrice = clonedCart.totalPrice = parseFloat(clonedCart.totalPrice) - parseFloat(productPrice * productQty);
          const products = clonedCart.products.filter(prod => prod.id !== id);
 
          writeCartToFile({ products, totalPrice });
