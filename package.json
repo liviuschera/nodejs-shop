@@ -10,6 +10,10 @@
   },
   "author": "Liviu Schera",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liviuschera/nodejs-shop"
+  },
   "devDependencies": {
     "nodemon": "^1.19.1"
   },
