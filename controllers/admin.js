@@ -29,7 +29,11 @@ exports.getEditProduct = async (req, res, next) => {
   // Optional query params
   const editMode = req.query.edit;
   const prodId = req.params.productId;
-  const product = await Product.findByPk(prodId);
+  // const product = await Product.findByPk(prodId);
+  const products = await req.user.getProducts({ where: { id: prodId } });
+  console.log(products);
+  const product = products[0];
+
   if (!editMode || !product) {
     return res.redirect('/');
   }
