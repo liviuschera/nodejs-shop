@@ -27,7 +27,7 @@ exports.getEditProduct = async (req, res, next) => {
   // Optional query params
   const editMode = req.query.edit;
   const prodId = req.params.productId;
-  const product = await Product.findById(prodId);
+  const product = await Product.findByPk(prodId);
   if (!editMode || !product) {
     return res.redirect('/');
   }
@@ -39,33 +39,58 @@ exports.getEditProduct = async (req, res, next) => {
     product
   });
 };
-exports.postEditProduct = (req, res, next) => {
-  const {
-    productId,
-    title,
-    imageUrl,
-    price,
-    description
-  } = req.body;
+exports.postEditProduct = async (req, res, next) => {
+  try {
+    const {
+      productId,
+      title,
+      imageUrl,
+      price,
+      description
+    } = req.body;
 
-  const PRODUCT = new Product(productId, title, imageUrl, description, price);
+    const product = await Product.findByPk(productId);
+    console.log("title", product.title);
 
-  PRODUCT.save();
-  res.redirect('/admin/products');
 
+    product.title = title;
+    product.imageUrl = imageUrl;
+    product.price = price;
+    product.description = description;
+    try {
+      console.log("Product saved!");
+      product.save();
+    } catch (error) {
+      console.error("Couldn't update the product", error);
+    }
+    // await Product.update(product, { where: { id: productId } });
+    res.redirect('/admin/products');
+  } catch (error) {
+    console.error(error);
+  }
 
 };
 
 exports.getProducts = async (req, res, next) => {
-  res.render('admin/products', {
-    prods: await Product.fetchAll(),
-    pageTitle: 'Admin Products',
-    path: '/admin/products'
-  });
+  try {
+
+    res.render('admin/products', {
+      prods: await Product.findAll(),
+      pageTitle: 'Admin Products',
+      path: '/admin/products'
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 exports.postDeleteProduct = async (req, res, next) => {
-  const prodId = req.body.productId;
-  await Product.deleteById(prodId);
-  res.redirect('/admin/products');
+  try {
+    const prodId = req.body.productId;
+    await Product.destroy({ where: { id: prodId } });
+    res.redirect('/admin/products');
+
+  } catch (error) {
+    console.error(error);
+  }
 };
