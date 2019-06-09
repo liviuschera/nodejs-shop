@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 const app = express();
 
@@ -19,14 +21,40 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+   User.findByPk(1).then(user => {
+      // 'user' is a Sequelize object
+      req.user = user;
+      next();
+   })
+})
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+// Optional declaration
+User.hasMany(Product);
+
+// Force overwrite of the tables. !Only in production!
 sequelize
+   // .sync({ force: true })
    .sync()
    .then(result => {
+      return User.findByPk(1);
+   })
+   .then(user => {
+      if (!user) {
+         User.create({
+            name: 'Liviu',
+            email: 'liviu@email.com'
+         })
+      }
+      return user;
+   }).then(user => {
+      // console.log(user);
       app.listen(3000);
    })
    .catch(err => {

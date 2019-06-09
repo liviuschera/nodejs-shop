@@ -14,12 +14,14 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-
-  Product.create({
+  // Because product belongs to user Sequelize will automatically create a
+  // create a 'magic' method by prefixing the Product with create =>
+  // createProduct()
+  req.user.createProduct({
     title, imageUrl, price, description
   }).then(result => {
     res.redirect('/');
-    console.log(result);
+    // console.log(result);
   }).catch(error => console.error(error));
 };
 
