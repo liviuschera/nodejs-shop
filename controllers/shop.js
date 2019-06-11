@@ -24,7 +24,7 @@ exports.getProduct = async (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: '/products'
-      })
+      });
   } catch (error) {
     console.error("Can't find the product! ", error);
   }
@@ -45,23 +45,26 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
-  const cart = await req.user.getCart();
-  // console.log(await req.user.cart);
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
 
-  // const products = await Product.fetchAll();
-  // const cart = await Cart.getProductsFormCart();
-  // res.render('shop/cart', {
-  //   path: '/cart',
-  //   pageTitle: 'Your Cart',
-  //   productsDetails: await Cart.getCart(products),
-  //   cardHasItems: cart.products.length
-  // });
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      productsDetails: products,
+      cardHasItems: cart.length
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 exports.postCart = async (req, res, next) => {
+  t
   const prodId = req.body.productId;
   const prodPrice = req.body.productPrice;
-  await Cart.addProduct(prodId, prodPrice);
+  // await Cart.addProduct(prodId, prodPrice);
   res.redirect('/cart');
 };
 
