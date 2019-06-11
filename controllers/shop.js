@@ -45,14 +45,17 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
-  const products = await Product.fetchAll();
-  const cart = await Cart.getProductsFormCart();
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart',
-    productsDetails: await Cart.getCart(products),
-    cardHasItems: cart.products.length
-  });
+  const cart = await req.user.getCart();
+  // console.log(await req.user.cart);
+
+  // const products = await Product.fetchAll();
+  // const cart = await Cart.getProductsFormCart();
+  // res.render('shop/cart', {
+  //   path: '/cart',
+  //   pageTitle: 'Your Cart',
+  //   productsDetails: await Cart.getCart(products),
+  //   cardHasItems: cart.products.length
+  // });
 };
 
 exports.postCart = async (req, res, next) => {

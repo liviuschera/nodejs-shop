@@ -31,7 +31,6 @@ exports.getEditProduct = async (req, res, next) => {
   const prodId = req.params.productId;
   // const product = await Product.findByPk(prodId);
   const products = await req.user.getProducts({ where: { id: prodId } });
-  console.log(products);
   const product = products[0];
 
   if (!editMode || !product) {
@@ -81,7 +80,7 @@ exports.getProducts = async (req, res, next) => {
   try {
 
     res.render('admin/products', {
-      prods: await Product.findAll(),
+      prods: await req.user.getProducts(),
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
