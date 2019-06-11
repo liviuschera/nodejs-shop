@@ -7,9 +7,9 @@
             <% if (cardHasItems) { %>
                 <ul>
                     <% productsDetails.forEach(product => { %>
-                    <% if (product.qty > 0) { %>
+                    <% if (product.cartItem.quantity > 0) { %>
                         <li>
-                            <p><%= product.title %> (<%= product.qty %>)</p>
+                            <p><%= product.title %> (<%= product.cartItem.quantity %>)</p>
                             <form action="/cart-delete-item" method="POST">
                                 <input type="hidden" value="<%= product.id %>" name="productId">
                                 <input type="hidden" value="<%= product.price %>" name="productPrice">
