@@ -44,6 +44,7 @@ Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
+let loggedUser;
 // Force overwrite of the tables. !Only in production!
 sequelize
    // .sync({ force: true })
@@ -60,10 +61,11 @@ sequelize
       }
       return user;
    }).then(user => {
+      loggedUser = user;
       return user.getCart();
    }).then(cart => {
       if (!cart) {
-         return user.createCart();
+         return loggedUser.createCart();
       }
    })
    .then(user => {
