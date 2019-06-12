@@ -70,7 +70,8 @@ exports.postCart = async (req, res, next) => {
     let newQuantity = 1;
     if (cartProducts.length > 0) {
       product = cartProducts[0];
-      newQuantity = product.cartItem.quantity + 1;
+      const oldQuantity = product.cartItem.quantity;
+      newQuantity = oldQuantity + 1;
     }
     cart.addProduct(product, { through: { quantity: newQuantity } })
 
