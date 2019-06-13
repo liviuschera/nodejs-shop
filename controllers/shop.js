@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -46,9 +45,10 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   try {
+    // const cart = await req.user.getCart();
     const cart = await req.user.getCart();
     const products = await cart.getProducts();
-    console.log(products);
+    // console.log(products);
 
     res.render('shop/cart', {
       path: '/cart',
@@ -95,16 +95,43 @@ exports.postCartDeleteProduct = async (req, res, next) => {
   }
 }
 
-exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'Your Orders'
-  });
+exports.postOrder = async (req, res, next) => {
+  try {
+    const order = await req.user.createOrder();
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+
+    order.addProducts(products.map(product => {
+      product.orderItem = { quantity: product.cartItem.quantity }
+      return product;
+    }
+    ));
+    res.redirect('/orders');
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render('shop/checkout', {
-    path: '/checkout',
-    pageTitle: 'Checkout'
-  });
+exports.getOrders = async (req, res, next) => {
+  try {
+    const orders = await req.user.getOrders({ include: ['products'] });
+    // console.log('~~~~~~~~~~~~~~~~~~~', req.user.getOrders());
+    console.log('~~~~~~~~~~~~~~~~~~~', orders[0].products);
+
+    res.render('shop/orders', {
+      path: '/orders',
+      pageTitle: 'Your Orders',
+      orders: orders
+    });
+  } catch (error) {
+    console.error(error);
+
+  }
 };
+
+// exports.getCheckout = (req, res, next) => {
+//   res.render('shop/checkout', {
+//     path: '/checkout',
+//     pageTitle: 'Checkout'
+//   });
+// };
