@@ -5,7 +5,7 @@ exports.getLogin = async (req, res, next) => {
    //    const cookieValue = cookie.slice(cookieSearch).split('=')[1];
    //    return cookieValue;
    // }
-   // console.log('#################', res.locals);
+   console.log('#################', req.session.isAuthenticated);
 
    try {
 
@@ -22,7 +22,8 @@ exports.getLogin = async (req, res, next) => {
 };
 exports.postLogin = async (req, res, next) => {
    // res.setHeader('Set-Cookie', 'loggedIn=true');
-   res.cookie('loggedIn', true);
+   // res.cookie('loggedIn', true);
+   req.session.isAuthenticated = true;
    res.redirect('/');
 };
 
