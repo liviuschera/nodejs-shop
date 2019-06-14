@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -21,6 +22,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
+app.use(session({ secret: 'my very long secret name', resave: false, saveUninitialized: false }));
 
 app.use((req, res, next) => {
    res.locals.isAuthenticated = false;
