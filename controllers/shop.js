@@ -115,8 +115,6 @@ exports.postOrder = async (req, res, next) => {
 exports.getOrders = async (req, res, next) => {
   try {
     const orders = await req.user.getOrders({ include: ['products'] });
-    // console.log('~~~~~~~~~~~~~~~~~~~', req.user.getOrders());
-    console.log('~~~~~~~~~~~~~~~~~~~', orders[0].products);
 
     res.render('shop/orders', {
       path: '/orders',
