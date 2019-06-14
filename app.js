@@ -21,6 +21,20 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
+
+app.use((req, res, next) => {
+   res.locals.isAuthenticated = false;
+   if (req.get('Cookie')) {
+      const cookie = req.get('Cookie');
+      const cookieSearch = cookie.search('loggedIn');
+      const cookieValue = cookie.slice(cookieSearch).split('=')[1];
+      if (cookieValue === "true") {
+         res.locals.isAuthenticated = true;
+      }
+   }
+
+   next();
+})
 app.use(bodyParser.urlencoded({
    extended: false
 }));
@@ -37,6 +51,8 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+
 
 app.use(errorController.get404);
 

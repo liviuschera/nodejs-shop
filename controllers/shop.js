@@ -6,7 +6,8 @@ exports.getProducts = async (req, res, next) => {
     res.render('shop/product-list', {
       prods: products,
       pageTitle: 'All Products',
-      path: '/products'
+      path: '/products',
+      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);
@@ -22,7 +23,8 @@ exports.getProduct = async (req, res, next) => {
       {
         product: product,
         pageTitle: product.title,
-        path: '/products'
+        path: '/products',
+        // isAuthenticated: res.isLoggedIn
       });
   } catch (error) {
     console.error("Can't find the product! ", error);
@@ -35,7 +37,8 @@ exports.getIndex = async (req, res, next) => {
     res.render('shop/index', {
       prods: products,
       pageTitle: 'Shop',
-      path: '/'
+      path: '/',
+      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);
@@ -54,7 +57,8 @@ exports.getCart = async (req, res, next) => {
       path: '/cart',
       pageTitle: 'Your Cart',
       productsDetails: products,
-      cardHasItems: products.length
+      cardHasItems: products.length,
+      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);
@@ -119,7 +123,8 @@ exports.getOrders = async (req, res, next) => {
     res.render('shop/orders', {
       path: '/orders',
       pageTitle: 'Your Orders',
-      orders: orders
+      orders: orders,
+      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);

@@ -1,8 +1,19 @@
 exports.getLogin = async (req, res, next) => {
+   // function getCookie(cookieName) {
+   //    const cookie = req.get('Cookie');
+   //    const cookieSearch = cookie.search(cookieName);
+   //    const cookieValue = cookie.slice(cookieSearch).split('=')[1];
+   //    return cookieValue;
+   // }
+   // console.log('#################', res.locals);
+
    try {
+
       res.render('auth/login', {
          path: '/login',
-         pageTitle: 'Login'
+         pageTitle: 'Login',
+         // isAuthenticated: req.isLoggedIn
+         // isAuthenticated: getCookie('loggedIn')
       });
    } catch (error) {
       console.error(error);
@@ -10,7 +21,8 @@ exports.getLogin = async (req, res, next) => {
    }
 };
 exports.postLogin = async (req, res, next) => {
-   req.isLoggedIn = true;
+   // res.setHeader('Set-Cookie', 'loggedIn=true');
+   res.cookie('loggedIn', true);
    res.redirect('/');
 };
 
