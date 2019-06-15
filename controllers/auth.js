@@ -12,6 +12,7 @@ exports.getLogin = async (req, res, next) => {
       res.render('auth/login', {
          path: '/login',
          pageTitle: 'Login',
+         // isAuthenticated: req.session.isAuthenticated
          // isAuthenticated: req.isLoggedIn
          // isAuthenticated: getCookie('loggedIn')
       });

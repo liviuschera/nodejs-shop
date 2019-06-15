@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -22,18 +23,28 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
-app.use(session({ secret: 'my very long secret name', resave: false, saveUninitialized: false }));
+
+
+
+var options = {
+   host: 'localhost',
+   user: 'root',
+   password: 'root',
+   database: 'nodejs-shop'
+};
+// const sessionStore = new MySQLStore(sequelize);
+const sessionStore = new MySQLStore(options);
+
+app.use(session({
+   key: 'session_cookie_name',
+   secret: 'session_cookie_secret',
+   store: sessionStore,
+   resave: false,
+   saveUninitialized: false
+}));
 
 app.use((req, res, next) => {
-   res.locals.isAuthenticated = false;
-   if (req.get('Cookie')) {
-      const cookie = req.get('Cookie');
-      const cookieSearch = cookie.search('loggedIn');
-      const cookieValue = cookie.slice(cookieSearch).split('=')[1];
-      if (cookieValue === "true") {
-         res.locals.isAuthenticated = true;
-      }
-   }
+   res.locals.isAuthenticated = req.session.isAuthenticated;
 
    next();
 })
