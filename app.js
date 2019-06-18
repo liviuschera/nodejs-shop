@@ -45,7 +45,9 @@ app.use(session({
 
 app.use((req, res, next) => {
    res.locals.isAuthenticated = req.session.isAuthenticated;
-
+   // res.user = req.session.loggedInUser;
+   // res.locals.loggedInUser = req.session.loggedInUser;
+   // console.log("#########&&&&&&&&&&&&########", loggedInUser);
    next();
 })
 app.use(bodyParser.urlencoded({
@@ -53,13 +55,13 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-   User.findByPk(1).then(user => {
-      // 'user' is a Sequelize object
-      req.user = user;
-      next();
-   })
-})
+// app.use((req, res, next) => {
+//    User.findByPk(1).then(user => {
+//       // 'user' is a Sequelize object
+//       req.user = user;
+//       next();
+//    })
+// })
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);

@@ -33,6 +33,8 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
+    console.log("*#&@^#&*^#*@&^#^^^^^", req.session.user);
+
     const products = await Product.findAll();
     res.render('shop/index', {
       prods: products,
@@ -48,8 +50,8 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   try {
-    // const cart = await req.user.getCart();
-    const cart = await req.user.getCart();
+
+    const cart = await req.session.user.getCart();
     const products = await cart.getProducts();
     // console.log(products);
 

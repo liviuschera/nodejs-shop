@@ -1,4 +1,7 @@
-exports.getLogin = async (req, res, next) => {
+const User = require('../models/user');
+
+
+exports.getLogin = (req, res, next) => {
    // function getCookie(cookieName) {
    //    const cookie = req.get('Cookie');
    //    const cookieSearch = cookie.search(cookieName);
@@ -22,9 +25,20 @@ exports.getLogin = async (req, res, next) => {
    }
 };
 exports.postLogin = async (req, res, next) => {
-   // res.setHeader('Set-Cookie', 'loggedIn=true');
-   // res.cookie('loggedIn', true);
-   req.session.isAuthenticated = true;
-   res.redirect('/');
+   // try {
+   //    const user = await User.findByPk(1);
+   //    req.session.isAuthenticated = true;
+   //    req.session.loggedInUser = user;
+   //    res.redirect('/');
+
+   // } catch (error) {
+   //    console.error("(((ERROR))): ", error);
+   // }
+   User.findByPk(1).then(user => {
+      req.session.isAuthenticated = true;
+      req.session.user = user;
+      res.redirect('/');
+   }).catch(error => console.error(error));
+
 };
 
