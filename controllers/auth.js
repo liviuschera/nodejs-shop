@@ -25,6 +25,14 @@ exports.getLogin = (req, res, next) => {
    }
 };
 
+exports.getSignup = (req, res, next) => {
+   res.render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      isAuthenticated: false
+   });
+};
+
 exports.postLogin = async (req, res, next) => {
    try {
       const user = await User.findByPk(1);
@@ -42,6 +50,8 @@ exports.postLogin = async (req, res, next) => {
       console.error("(((ERROR))): ", error);
    }
 };
+
+exports.postSignup = (req, res, next) => {};
 
 exports.postLogout = (req, res, next) => {
    try {
