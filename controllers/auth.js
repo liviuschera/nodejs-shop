@@ -27,10 +27,16 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
    try {
-      // const user = await User.findByPk(1);
+      const user = await User.findByPk(1);
       req.session.isAuthenticated = true;
-      // req.session.user = user;
-      res.redirect('/');
+      req.session.user = user;
+      req.session.save(err => {
+         // Using save method just to make sure that redirect is being
+         // called only after data has been saved in database
+         console.error(err);
+         res.redirect('/');
+
+      });
 
    } catch (error) {
       console.error("(((ERROR))): ", error);

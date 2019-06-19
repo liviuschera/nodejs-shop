@@ -32,7 +32,7 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    // console.log("*#&@^#&*^#*@&^#^^^^^", req.session.user);
+    console.log("*#&@^#&*^#*@&^#^^^^^", req.session.user);
 
     const products = await Product.findAll();
     res.render('shop/index', {

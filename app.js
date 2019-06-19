@@ -50,13 +50,18 @@ app.use((req, res, next) => {
    // console.log("#########&&&&&&&&&&&&########", loggedInUser);
    next();
 })
+
 app.use(bodyParser.urlencoded({
    extended: false
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-   User.findByPk(1).then(user => {
+   if (!req.session.user) {
+      return next();
+   }
+   User.findByPk(req.session.user.id).then(user => {
       // 'user' is a Sequelize object
       req.user = user;
       next();
