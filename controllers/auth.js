@@ -24,21 +24,29 @@ exports.getLogin = (req, res, next) => {
 
    }
 };
+
 exports.postLogin = async (req, res, next) => {
-   // try {
-   //    const user = await User.findByPk(1);
-   //    req.session.isAuthenticated = true;
-   //    req.session.loggedInUser = user;
-   //    res.redirect('/');
-
-   // } catch (error) {
-   //    console.error("(((ERROR))): ", error);
-   // }
-   User.findByPk(1).then(user => {
+   try {
+      // const user = await User.findByPk(1);
       req.session.isAuthenticated = true;
-      req.session.user = user;
+      // req.session.user = user;
       res.redirect('/');
-   }).catch(error => console.error(error));
 
+   } catch (error) {
+      console.error("(((ERROR))): ", error);
+   }
 };
 
+exports.postLogout = (req, res, next) => {
+   try {
+      req.session.destroy((error) => {
+         console.error(error);
+
+         res.redirect('/');
+
+      });
+
+   } catch (error) {
+      console.error("(((ERROR))): ", error);
+   }
+};

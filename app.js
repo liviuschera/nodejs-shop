@@ -55,13 +55,13 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use((req, res, next) => {
-//    User.findByPk(1).then(user => {
-//       // 'user' is a Sequelize object
-//       req.user = user;
-//       next();
-//    })
-// })
+app.use((req, res, next) => {
+   User.findByPk(1).then(user => {
+      // 'user' is a Sequelize object
+      req.user = user;
+      next();
+   })
+})
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -71,18 +71,29 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+Product.belongsTo(User, {
+   constraints: true,
+   onDelete: 'CASCADE'
+});
 User.hasMany(Product);
 User.hasOne(Cart);
 
 Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
+Cart.belongsToMany(Product, {
+   through: CartItem
+});
+Product.belongsToMany(Cart, {
+   through: CartItem
+});
 
 Order.belongsTo(User);
 User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-Product.belongsToMany(Order, { through: OrderItem });
+Order.belongsToMany(Product, {
+   through: OrderItem
+});
+Product.belongsToMany(Order, {
+   through: OrderItem
+});
 
 let loggedUser;
 // Force overwrite of the tables. !Only in production!
