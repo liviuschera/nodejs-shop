@@ -51,7 +51,33 @@ exports.postLogin = async (req, res, next) => {
    }
 };
 
-exports.postSignup = (req, res, next) => {};
+exports.postSignup = (req, res, next) => {
+   const email = req.body.email;
+   const password = req.body.password;
+   console.log("before find: ", email);
+
+   User.findAll({
+         limit: 1,
+         where: {
+            email: email
+         }
+      }).then(userResult => {
+         if (userResult) {
+            return res.redirect('/');
+         }
+         const user = User.create({
+            email,
+            password,
+            cart: {
+               items: []
+            }
+         });
+
+         user.save()
+
+      }).then(result => res.redirect('/login'))
+      .catch(err => console.error(err));
+};
 
 exports.postLogout = (req, res, next) => {
    try {

@@ -103,30 +103,45 @@ Product.belongsToMany(Order, {
 let loggedUser;
 // Force overwrite of the tables. !Only in production!
 sequelize
-   // .sync({ force: true })
+   // .sync({
+   //    force: true
+   // })
    .sync()
    .then(result => {
-      return User.findByPk(1);
-   })
-   .then(user => {
-      if (!user) {
-         User.create({
-            name: 'Liviu',
-            email: 'liviu@email.com'
-         })
-      }
-      return user;
-   }).then(user => {
-      loggedUser = user;
-      return user.getCart();
-   }).then(cart => {
-      if (!cart) {
-         return loggedUser.createCart();
-      }
-   })
-   .then(user => {
+
       app.listen(3000);
    })
    .catch(err => {
       console.error(err);
    });
+// sequelize
+//    // .sync({
+//    //    force: true
+//    // })
+//    .sync()
+//    .then(result => {
+//       console.log(result);
+
+//       // return User.findByPk(1);
+//    })
+//    .then(user => {
+//       // if (!user) {
+//       //    User.create({
+//       //       email: 'liviu@email.com'
+//       //    })
+//       // }
+//       // return user;
+//    }).then(user => {
+//       loggedUser = user;
+//       return user.getCart();
+//    }).then(cart => {
+//       if (!cart) {
+//          return loggedUser.createCart();
+//       }
+//    })
+//    .then(user => {
+//       app.listen(3000);
+//    })
+//    .catch(err => {
+//       console.error(err);
+//    });
