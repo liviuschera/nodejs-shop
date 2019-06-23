@@ -19,7 +19,10 @@ exports.postAddProduct = (req, res, next) => {
   // create a 'magic' method by prefixing the Product with create =>
   // createProduct()
   req.user.createProduct({
-    title, imageUrl, price, description
+    title,
+    imageUrl,
+    price,
+    description
   }).then(result => {
     res.redirect('/');
     // console.log(result);
@@ -31,7 +34,11 @@ exports.getEditProduct = async (req, res, next) => {
   const editMode = req.query.edit;
   const prodId = req.params.productId;
   // const product = await Product.findByPk(prodId);
-  const products = await req.user.getProducts({ where: { id: prodId } });
+  const products = await req.user.getProducts({
+    where: {
+      id: prodId
+    }
+  });
   const product = products[0];
 
   if (!editMode || !product) {
@@ -94,7 +101,11 @@ exports.getProducts = async (req, res, next) => {
 exports.postDeleteProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    await Product.destroy({ where: { id: prodId } });
+    await Product.destroy({
+      where: {
+        id: prodId
+      }
+    });
     res.redirect('/admin/products');
 
   } catch (error) {
