@@ -5,7 +5,7 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
-            <% if (cardHasItems) { %>
+            <% if (productsDetails) { %>
                 <ul class="cart__item-list">
                     <% productsDetails.forEach(product => { %>
                     <% if (product.cartItem.quantity > 0) { %>
@@ -15,6 +15,7 @@
                             <form action="/cart-delete-item" method="POST">
                                 <input type="hidden" value="<%= product.id %>" name="productId">
                                 <input type="hidden" value="<%= product.price %>" name="productPrice">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn danger" type="submit">Delete</button>
                             </form>
                         </li>
@@ -24,6 +25,7 @@
                 <hr>
                 <div class="centered">
                     <form action="/create-order" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit" class="btn">Order Now!</button>
                     </form>
                 </div>

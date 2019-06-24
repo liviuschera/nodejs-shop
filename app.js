@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -32,8 +33,8 @@ var options = {
    password: 'root',
    database: 'nodejs-shop'
 };
-// const sessionStore = new MySQLStore(sequelize);
 const sessionStore = new MySQLStore(options);
+const csrfProtection = csrf();
 
 app.use(session({
    key: 'session_cookie_name',
@@ -43,14 +44,11 @@ app.use(session({
    saveUninitialized: false
 }));
 
-app.use((req, res, next) => {
-   res.locals.isAuthenticated = req.session.isAuthenticated;
-   next();
-})
-
 app.use(bodyParser.urlencoded({
    extended: false
 }));
+
+app.use(csrfProtection);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -63,6 +61,12 @@ app.use((req, res, next) => {
       req.user = user;
       next();
    })
+})
+
+app.use((req, res, next) => {
+   res.locals.isAuthenticated = req.session.isAuthenticated;
+   res.locals.csrfToken = req.csrfToken();
+   next();
 })
 
 app.use('/admin', adminRoutes);

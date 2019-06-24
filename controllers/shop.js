@@ -37,7 +37,6 @@ exports.getIndex = async (req, res, next) => {
       prods: products,
       pageTitle: 'Shop',
       path: '/',
-      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);
@@ -49,18 +48,25 @@ exports.getCart = async (req, res, next) => {
   try {
 
     const cart = await req.user.getCart();
-    const products = await cart.getProducts();
+    console.log("$$$$$$$$$$CART$$$$$$$$$$$", cart);
+    let products;
+    if (cart) {
+      products = await cart.getProducts();
+    } else {
+      products = null;
+    }
     // console.log(products);
+
 
     res.render('shop/cart', {
       path: '/cart',
       pageTitle: 'Your Cart',
       productsDetails: products,
-      cardHasItems: products.length,
+      // cardHasItems: products.length,
       // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
-    console.error(error);
+    console.error("There is no cart!", error);
   }
 };
 
@@ -69,11 +75,17 @@ exports.postCart = async (req, res, next) => {
     const prodId = req.body.productId;
     let product = await Product.findByPk(prodId);
     let cart = await req.user.getCart();
-    const cartProducts = await cart.getProducts({
-      where: {
-        id: prodId
-      }
-    });
+    let cartProducts;
+    if (cart) {
+      cartProducts = await cart.getProducts({
+        where: {
+          id: prodId
+        }
+      });
+    } else {
+      cartProducts = [];
+    }
+
     let newQuantity = 1;
     if (cartProducts.length > 0) {
       product = cartProducts[0];
