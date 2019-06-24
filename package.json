@@ -20,6 +20,7 @@
   "dependencies": {
     "@types/sequelize": "^4.28.3",
     "bcryptjs": "^2.4.3",
+    "csurf": "^1.10.0",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
     "express-mysql-session": "^2.1.0",
