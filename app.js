@@ -84,11 +84,6 @@ app.use((req, res, next) => {
    const user = User.findById(req.session.user.id);
    req.user = user;
    next();
-   // User.findById(req.session.user.id).then(user => {
-   //    // 'user' is a Sequelize object
-   //    req.user = user;
-   //    next();
-   // })
 })
 
 app.use((req, res, next) => {
