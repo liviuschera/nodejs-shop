@@ -1,24 +1,47 @@
-const Sequelize = require('sequelize');
+const db = require('../util/database');
 
-const sequelize = require('../util/database');
-const User = sequelize.define('user', {
-   id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true
-   },
+module.exports = class User {
 
-   email: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: true
-   },
-   password: {
-      type: Sequelize.STRING,
-      allowNull: false
-   },
+   constructor(email, password) {
+      this.email = email;
+      this.password = password;
+   }
+   static async findAll() {
+      try {
+         const [result, _] = await db.query('SELECT * FROM users');
+         return result;
+      } catch (error) {
+         console.error('Product findAll', error);
+      }
+   }
 
-});
+   static async findById(id) {
+      try {
+         const [result, _] = await db.query('SELECT * FROM products WHERE id = ?;', [id]);
+         return result[0];
+      } catch (error) {
+         console.error('Product findById: ', error);
+      }
+   }
 
-module.exports = User;
+   static async findByEmail(email) {
+      try {
+         const [result, _] = await db.query('SELECT * FROM users WHERE email = ?;', [email]);
+         return result[0];
+      } catch (error) {
+         console.error('Product findByEmail: ', error);
+      }
+   }
+
+   async create() {
+      try {
+         const createUser = await db.query(
+            "INSERT INTO users (email, password) VALUES (?, ?)",
+            [this.email, this.password]
+         );
+         return createUser;
+      } catch (error) {
+         console.error('User createUser: ', error);
+      }
+   }
+}

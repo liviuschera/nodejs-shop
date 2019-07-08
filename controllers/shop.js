@@ -3,11 +3,11 @@ const Product = require('../models/product');
 exports.getProducts = async (req, res, next) => {
   try {
     const products = await Product.findAll();
+
     res.render('shop/product-list', {
       prods: products,
       pageTitle: 'All Products',
       path: '/products',
-      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error(error);
@@ -17,13 +17,14 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const prodId = req.params.productId;
-    const product = await Product.findByPk(prodId);
+    const product = await Product.findById(prodId);
+
+    console.log(product);
 
     res.render('shop/product-detail', {
       product: product,
       pageTitle: product.title,
       path: '/products',
-      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error("Can't find the product! ", error);

@@ -15,18 +15,25 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  // Because product belongs to user Sequelize will automatically create a
-  // create a 'magic' method by prefixing the Product with create =>
-  // createProduct()
-  req.user.createProduct({
-    title,
-    imageUrl,
-    price,
-    description
-  }).then(result => {
+  try {
+    const newProduct = new Product(title, imageUrl, description, price)
+    newProduct.create()
     res.redirect('/');
-    // console.log(result);
-  }).catch(error => console.error(error));
+
+  } catch (error) {
+    console.error('Admin postAddProduct error: ', error);
+
+  }
+
+  // req.user.createProduct({
+  //   title,
+  //   imageUrl,
+  //   price,
+  //   description
+  // }).then(result => {
+  //   res.redirect('/');
+  //   // console.log(result);
+  // }).catch(error => console.error(error));
 };
 
 exports.getEditProduct = async (req, res, next) => {

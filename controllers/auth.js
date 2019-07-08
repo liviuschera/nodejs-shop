@@ -4,16 +4,10 @@ const bcrypt = require('bcryptjs');
 
 
 exports.getLogin = (req, res, next) => {
-   try {
-
-      res.render('auth/login', {
-         path: '/login',
-         pageTitle: 'Login',
-      });
-   } catch (error) {
-      console.error(error);
-
-   }
+   res.render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+   });
 };
 
 exports.getSignup = (req, res, next) => {
@@ -28,12 +22,7 @@ exports.postLogin = async (req, res, next) => {
    try {
       const email = req.body.email;
       const password = req.body.password;
-      const findUser = await User.findAll({
-         limit: 1,
-         where: {
-            email: email
-         }
-      });
+      const findUser = await User.findByEmail(email);
 
       if (findUser.length < 1 || password.length < 1) {
          return res.redirect('/login');
@@ -53,54 +42,27 @@ exports.postLogin = async (req, res, next) => {
          }
       }
    } catch (error) {
-      console.error(error);
+      console.error("postLogin error: ", error);
    }
-
-   // try {
-
-   //    const user = await User.findByPk(1);
-   //    req.session.isAuthenticated = true;
-   //    req.session.user = user;
-   //    req.session.save(err => {
-   //       // Using save method just to make sure that redirect is being
-   //       // called only after data has been saved in database
-   //       console.error(err);
-   //       res.redirect('/');
-
-   //    });
-
-   // } catch (error) {
-   //    console.error("(((ERROR))): ", error);
-   // }
 };
 
 exports.postSignup = async (req, res, next) => {
    const email = req.body.email;
    const password = await bcrypt.hash(req.body.password, 12);
-   try {
-      const findUser = await User.findAll({
-         limit: 1,
-         where: {
-            email: email
-         }
-      });
 
-      if (findUser.length > 0) {
+   try {
+      const userExists = await User.findByEmail(email);
+
+
+      if (userExists) {
          return res.redirect('/');
       } else {
-         const user = await User.create({
-            email,
-            password,
-            cart: {
-               items: []
-            }
-         });
-
-         user.save()
+         const newUser = new User(email, password);
+         newUser.create();
          res.redirect('/login')
       }
    } catch (error) {
-      console.error(error);
+      console.error("postSignup error: ", error);
    }
 
 };
@@ -108,13 +70,11 @@ exports.postSignup = async (req, res, next) => {
 exports.postLogout = (req, res, next) => {
    try {
       req.session.destroy((error) => {
-         console.error(error);
-
+         console.error("session destroy error: ", error);
          res.redirect('/');
-
       });
 
    } catch (error) {
-      console.error("(((ERROR))): ", error);
+      console.error("postLogout error: ", error);
    }
 };

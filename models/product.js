@@ -1,30 +1,39 @@
-const Sequelize = require('sequelize');
+const db = require('../util/database');
 
-const sequelize = require('../util/database');
-
-const Product = sequelize.define('product', {
-   id: {
-      type: Sequelize.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true
-   },
-   title: {
-      type: Sequelize.STRING,
-      allowNull: false
-   },
-   price: {
-      type: Sequelize.DOUBLE,
-      allowNull: false
-   },
-   imageUrl: {
-      type: Sequelize.STRING,
-      allowNull: false
-   },
-   description: {
-      type: Sequelize.STRING,
-      allowNull: false
+module.exports = class Product {
+   constructor(id, title, imageUrl, description, price) {
+      this.id = id;
+      this.title = title;
+      this.imageUrl = imageUrl;
+      this.description = description;
+      this.price = price;
    }
-});
 
-module.exports = Product;
+   static async findAll() {
+      try {
+         const [result, _] = await db.query('SELECT * FROM products');
+         return result;
+      } catch (error) {
+         console.error('Product findAll: ', error);
+      }
+   }
+
+   static async findById(id) {
+      try {
+         const [result, _] = await db.query('SELECT * FROM products WHERE id = ?;', [id]);
+         return result[0];
+      } catch (error) {
+         console.error('Product findProductById: ', error);
+      }
+   }
+
+   async create() {
+      try {
+         const createProduct = await db.query("INSERT INTO products (title, imageUrl, description, price) VALUES (?, ?, ?, ?);", [this.title, this.imageUrl, this.description, this.price]);
+         return createProduct;
+      } catch (error) {
+         console.error('Product createProduct error: ', error);
+
+      }
+   }
+}

@@ -1,6 +1,9 @@
-const Sequelize = require('sequelize');
-// const Sequelize = require('sequelize/index');
+   const mysql = require('mysql2');
+   const pool = mysql.createPool({
+      host: 'localhost',
+      user: 'nodejs_shop',
+      database: 'nodejs_shop',
+      password: 'nodejs'
+   })
 
-const sequelize = new Sequelize('nodejs-shop', 'root', 'root', { dialect: 'mysql', host: 'localhost' });
-
-module.exports = sequelize;
+   module.exports = pool.promise()

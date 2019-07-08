@@ -7,13 +7,15 @@ const MySQLStore = require('express-mysql-session')(session);
 const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
-const sequelize = require('./util/database');
-const Product = require('./models/product');
-const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
+const db = require('./util/database');
+
+// const sequelize = require('./util/database');
+// const Product = require('./models/product');
+// const User = require('./models/user');
+// const Cart = require('./models/cart');
+// const CartItem = require('./models/cart-item');
+// const Order = require('./models/order');
+// const OrderItem = require('./models/order-item');
 
 const app = express();
 
@@ -24,14 +26,37 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
+const PORT = 3000;
+
+// db.query("DROP TABLE IF EXISTS `products`;");
+// db.query("DROP TABLE IF EXISTS `users`;");
+
+// db.query("CREATE TABLE IF NOT EXISTS `products` (`id` int(11) NOT NULL AUTO_INCREMENT,   `title` varchar(255) COLLATE utf8_bin NOT NULL,   `price` double NOT NULL,   `imageUrl` varchar(255) COLLATE utf8_bin NOT NULL,   `description` varchar(255) COLLATE utf8_bin NOT NULL,   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,   `updatedAt` datetime DEFAULT NULL,   `userId` int(11) DEFAULT NULL,   PRIMARY KEY (`id`),   KEY `userId` (`userId`) ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;").then(result => {
+//    console.log(result);
+
+// }).catch(err => console.error(err));
+
+// db.query("CREATE TABLE IF NOT EXISTS `users` (   `id` int(11) NOT NULL AUTO_INCREMENT,   `email` varchar(255) COLLATE utf8_bin NOT NULL,   `password` varchar(255) COLLATE utf8_bin NOT NULL,   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,   `updatedAt` datetime DEFAULT NULL,   PRIMARY KEY (`id`),   UNIQUE KEY `email` (`email`) ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;").then(result => {
+//    console.log(result);
+
+// }).catch(err => console.error(err));
+
+// db.query("SELECT * FROM products").then(result => {
+//    console.log(result);
+
+// }).catch(err => console.error(err));
+
+
+// }).catch(err => console.error(err));
 
 
 
-var options = {
+
+const options = {
    host: 'localhost',
-   user: 'root',
-   password: 'root',
-   database: 'nodejs-shop'
+   user: 'nodejs_shop',
+   password: 'nodejs',
+   database: 'nodejs_shop'
 };
 const sessionStore = new MySQLStore(options);
 const csrfProtection = csrf();
@@ -56,14 +81,18 @@ app.use((req, res, next) => {
    if (!req.session.user) {
       return next();
    }
-   User.findByPk(req.session.user.id).then(user => {
-      // 'user' is a Sequelize object
-      req.user = user;
-      next();
-   })
+   const user = User.findById(req.session.user.id);
+   req.user = user;
+   next();
+   // User.findById(req.session.user.id).then(user => {
+   //    // 'user' is a Sequelize object
+   //    req.user = user;
+   //    next();
+   // })
 })
 
 app.use((req, res, next) => {
+   // res.locals.isAuthenticated = false;
    res.locals.isAuthenticated = req.session.isAuthenticated;
    res.locals.csrfToken = req.csrfToken();
    next();
@@ -77,72 +106,43 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-Product.belongsTo(User, {
-   constraints: true,
-   onDelete: 'CASCADE'
-});
-User.hasMany(Product);
-User.hasOne(Cart);
+// Product.belongsTo(User, {
+//    constraints: true,
+//    onDelete: 'CASCADE'
+// });
+// User.hasMany(Product);
+// User.hasOne(Cart);
 
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, {
-   through: CartItem
-});
-Product.belongsToMany(Cart, {
-   through: CartItem
-});
+// Cart.belongsTo(User);
+// Cart.belongsToMany(Product, {
+//    through: CartItem
+// });
+// Product.belongsToMany(Cart, {
+//    through: CartItem
+// });
 
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, {
-   through: OrderItem
-});
-Product.belongsToMany(Order, {
-   through: OrderItem
-});
+// Order.belongsTo(User);
+// User.hasMany(Order);
+// Order.belongsToMany(Product, {
+//    through: OrderItem
+// });
+// Product.belongsToMany(Order, {
+//    through: OrderItem
+// });
 
-let loggedUser;
+// let loggedUser;
 // Force overwrite of the tables. !Only in production!
-sequelize
-   // .sync({
-   //    force: true
-   // })
-   .sync()
-   .then(result => {
-
-      app.listen(3000);
-   })
-   .catch(err => {
-      console.error(err);
-   });
 // sequelize
 //    // .sync({
 //    //    force: true
 //    // })
 //    .sync()
 //    .then(result => {
-//       console.log(result);
 
-//       // return User.findByPk(1);
-//    })
-//    .then(user => {
-//       // if (!user) {
-//       //    User.create({
-//       //       email: 'liviu@email.com'
-//       //    })
-//       // }
-//       // return user;
-//    }).then(user => {
-//       loggedUser = user;
-//       return user.getCart();
-//    }).then(cart => {
-//       if (!cart) {
-//          return loggedUser.createCart();
-//       }
-//    })
-//    .then(user => {
 //       app.listen(3000);
 //    })
 //    .catch(err => {
 //       console.error(err);
 //    });
+
+app.listen(PORT, () => console.log(`Listening on port ${PORT}!`))
