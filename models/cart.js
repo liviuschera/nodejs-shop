@@ -1,18 +1,24 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../util/database');
+const db = require('../util/database');
 
-const Cart = sequelize.define('cart',
-   {
-      id: {
-         type: Sequelize.INTEGER,
-         autoIncrement: true,
-         allowNull: false,
-         primaryKey: true
-      },
-      userId: {
-         type: Sequelize.INTEGER,
-         unique: true
+module.exports = class Cart {
+
+   constructor(userId) {
+      this.userId = userId;
+   }
+
+   static async findAll() {
+      try {
+         const [result, _] = await db.query("SELECT * FROM carts JOIN cartitems ON carts.id = cartitems.cartId;");
+         return result;
+      } catch (error) {
+         console.error(error);
       }
-   });
+   }
 
-module.exports = Cart;
+   static async addProduct(prodId) {
+      // db.query("")
+
+   }
+
+
+}

@@ -5,16 +5,16 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
-            <% if (productsDetails) { %>
+            <% if (cart) { %>
                 <ul class="cart__item-list">
-                    <% productsDetails.forEach(product => { %>
-                    <% if (product.cartItem.quantity > 0) { %>
+                    <% cart.forEach(item => { %>
+                    <% if (item.quantity > 0) { %>
                         <li class="cart__item">
-                            <h1><%= product.title %></h1>
-                            <h2>Quantity: <%= product.cartItem.quantity %></h2>
+                            <h1><%= productsDetails.filter(prod => prod.id === item.productId)[0].title %></h1>
+                            <h2>Quantity: <%= item.quantity %></h2>
                             <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= product.id %>" name="productId">
-                                <input type="hidden" value="<%= product.price %>" name="productPrice">
+                                <input type="hidden" value="<%= item.productId %>" name="productId">
+                                <input type="hidden" value="<%= item.price %>" name="productPrice">
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button class="btn danger" type="submit">Delete</button>
                             </form>

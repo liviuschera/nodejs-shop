@@ -24,17 +24,19 @@ exports.postLogin = async (req, res, next) => {
       const password = req.body.password;
       const findUser = await User.findByEmail(email);
 
-      if (findUser.length < 1 || password.length < 1) {
+      if (password.length < 1) {
          return res.redirect('/login');
       } else {
          const passwordsAreMatching = bcrypt.compare(password, findUser.password)
          if (passwordsAreMatching) {
             req.session.isAuthenticated = true;
-            req.session.user = findUser[0];
+            req.session.user = findUser;
+            console.log(findUser);
+
             req.session.save(err => {
                // Using save method just to make sure that redirect is being
                // called only after data has been saved in database
-               console.error('Session error: ', err);
+               console.error('Session save error: ', err);
                res.redirect('/');
             });
          } else {

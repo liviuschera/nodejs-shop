@@ -8,6 +8,7 @@ const csrf = require('csurf');
 
 const errorController = require('./controllers/error');
 const db = require('./util/database');
+const User = require('./models/user');
 
 // const sequelize = require('./util/database');
 // const Product = require('./models/product');
@@ -54,8 +55,8 @@ const PORT = 3000;
 
 const options = {
    host: 'localhost',
-   user: 'nodejs_shop',
-   password: 'nodejs',
+   user: 'root',
+   password: 'r',
    database: 'nodejs_shop'
 };
 const sessionStore = new MySQLStore(options);
@@ -79,10 +80,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
    if (!req.session.user) {
+      console.log(`user not found: ${req.session.user}`);
       return next();
    }
    const user = User.findById(req.session.user.id);
    req.user = user;
+   // console.log(`user in app: ${user[0]}`);
+
    next();
 })
 
@@ -97,47 +101,6 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-
-
 app.use(errorController.get404);
-
-// Product.belongsTo(User, {
-//    constraints: true,
-//    onDelete: 'CASCADE'
-// });
-// User.hasMany(Product);
-// User.hasOne(Cart);
-
-// Cart.belongsTo(User);
-// Cart.belongsToMany(Product, {
-//    through: CartItem
-// });
-// Product.belongsToMany(Cart, {
-//    through: CartItem
-// });
-
-// Order.belongsTo(User);
-// User.hasMany(Order);
-// Order.belongsToMany(Product, {
-//    through: OrderItem
-// });
-// Product.belongsToMany(Order, {
-//    through: OrderItem
-// });
-
-// let loggedUser;
-// Force overwrite of the tables. !Only in production!
-// sequelize
-//    // .sync({
-//    //    force: true
-//    // })
-//    .sync()
-//    .then(result => {
-
-//       app.listen(3000);
-//    })
-//    .catch(err => {
-//       console.error(err);
-//    });
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}!`))

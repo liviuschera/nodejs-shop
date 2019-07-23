@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart')
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -19,7 +20,7 @@ exports.getProduct = async (req, res, next) => {
     const prodId = req.params.productId;
     const product = await Product.findById(prodId);
 
-    console.log(product);
+    console.log("PRODUCT", product);
 
     res.render('shop/product-detail', {
       product: product,
@@ -48,23 +49,14 @@ exports.getIndex = async (req, res, next) => {
 exports.getCart = async (req, res, next) => {
   try {
 
-    const cart = await req.user.getCart();
-    console.log("$$$$$$$$$$CART$$$$$$$$$$$", cart);
-    let products;
-    if (cart) {
-      products = await cart.getProducts();
-    } else {
-      products = null;
-    }
-    // console.log(products);
-
+    const cart = await Cart.findAll();
+    const products = await Product.findAll();
 
     res.render('shop/cart', {
       path: '/cart',
       pageTitle: 'Your Cart',
+      cart: cart,
       productsDetails: products,
-      // cardHasItems: products.length,
-      // isAuthenticated: res.isLoggedIn
     });
   } catch (error) {
     console.error("There is no cart!", error);
@@ -74,30 +66,33 @@ exports.getCart = async (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    let product = await Product.findByPk(prodId);
-    let cart = await req.user.getCart();
+    let product = await Product.findById(prodId);
+    let cart = await Cart.findAll();
     let cartProducts;
-    if (cart) {
-      cartProducts = await cart.getProducts({
-        where: {
-          id: prodId
-        }
-      });
-    } else {
-      cartProducts = [];
-    }
+    console.log("user:", req.session.user);
 
-    let newQuantity = 1;
-    if (cartProducts.length > 0) {
-      product = cartProducts[0];
-      const oldQuantity = product.cartItem.quantity;
-      newQuantity = oldQuantity + 1;
-    }
-    cart.addProduct(product, {
-      through: {
-        quantity: newQuantity
-      }
-    })
+    await Cart.addProduct(prodId);
+    // if (cart) {
+    //   cartProducts = await cart.getProducts({
+    //     where: {
+    //       id: prodId
+    //     }
+    //   });
+    // } else {
+    //   cartProducts = [];
+    // }
+
+    // let newQuantity = 1;
+    // if (cartProducts.length > 0) {
+    //   product = cartProducts[0];
+    //   const oldQuantity = product.cartItem.quantity;
+    //   newQuantity = oldQuantity + 1;
+    // }
+    // cart.addProduct(product, {
+    //   through: {
+    //     quantity: newQuantity
+    //   }
+    // })
 
     res.redirect('/cart');
   } catch (error) {
